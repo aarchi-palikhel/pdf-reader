@@ -2,7 +2,7 @@
 
 <p align="center">
   <em>A pretty PDF reader that runs entirely in your browser.</em><br>
-  Open a PDF, highlight it, annotate it, and save a copy.
+  Open a PDF, highlight it, annotate it, print it, and save a copy.
 </p>
 
 <p align="center">
@@ -18,25 +18,27 @@
 ## Features
 
 - Open a PDF with a button or by dragging it in
-- Scroll all pages in one continuous view
-- Type a zoom percentage or a page number
+- Read the extracted text of any page and copy it
 - Highlight, draw shapes, lines and arrows, and add text
 - Pick colors, line thickness and text size
 - Undo, redo, move, resize and delete annotations
+- Collapsible toolbar for more reading space
 - **Save PDF** downloads a copy with your changes
-- Light and dark mode
+- **Print** the PDF with your annotations
 
 | Key | Action |
 | --- | --- |
 | ← / → | Previous / next page |
 | Ctrl/Cmd + Z / Y | Undo / redo |
 | Delete | Remove selected annotation |
+| Esc | Deselect |
 
 ## Privacy
 
 Nothing is uploaded. Your files stay on your device.
 
-
 ## Built with
 
 [PDF.js](https://mozilla.github.io/pdf.js/) · [pdf-lib](https://pdf-lib.js.org/) · [Merriweather](https://fonts.google.com/specimen/Merriweather)
+
+An internet connection is needed to load these.
