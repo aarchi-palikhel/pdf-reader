@@ -6,6 +6,8 @@
 <style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <title>PDF Reader</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23ff7eb6'/%3E%3Cstop%20offset='1'%20stop-color='%239b5de5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='url%28%23g%29'/%3E%3Cpath%20fill='%23fff'%20d='M32%2054S10%2040%2010%2026c0-7.200%205.200-12.500%2011.800-12.500%204.200%200%207.800%202.200%2010.200%205.800%202.400-3.600%206-5.800%2010.200-5.800C48.800%2013.500%2054%2018.800%2054%2026c0%2014-22%2028-22%2028z'/%3E%3Cpath%20fill='%23ffd24d'%20d='M51%203l2.600%207.400L61%2013l-7.400%202.600L51%2023l-2.600-7.400L41%2013l7.400-2.600z'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#d6347f">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap">
 <style>
 /* Layout: sticky toolbar over a scrolling stage; the PDF page sits on a paper sheet, with a Text tab for extracted content. */
@@ -246,7 +248,7 @@ body.has-sel .ov{touch-action:none}
     </div>
     <div class="group end">
       <button id="printBtn" title="Print the PDF with your annotations" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><span>Print</span></button>
-      <button id="themeBtn" aria-label="Switch to dark mode" title="Switch to dark mode"><svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true"></svg></button>
+      <button id="themeBtn" aria-label="Switch to dark mode" title="Switch to dark mode"><svg id="themeIcon" class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 14.3A8.7 8.7 0 019.7 3.4a8.7 8.7 0 1010.9 10.9z" fill="#1f2d52" stroke="none"/></svg></button>
     </div>
   </div>
   <div class="group">
@@ -363,6 +365,25 @@ body.has-sel .ov{touch-action:none}
 <script>
 (function(){
   var $=function(id){return document.getElementById(id)};
+
+  /* ---------- Light / dark mode ---------- */
+  var root=document.documentElement,SUN='<circle cx="12" cy="12" r="4.6" fill="#ffd24d" stroke="none"/><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.1 5.1l1.9 1.9M17 17l1.9 1.9M5.1 18.9L7 17M17 7l1.9-1.9" stroke="#ffd24d" stroke-width="2.1" stroke-linecap="round" fill="none"/>',MOON='<path d="M20.6 14.3A8.7 8.7 0 019.7 3.4a8.7 8.7 0 1010.9 10.9z" fill="#1f2d52" stroke="none"/>';
+  function effTheme(){var t=root.getAttribute('data-theme');if(t==='dark'||t==='light')return t;return matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}
+  function paintTheme(){
+    var d=effTheme()==='dark',b=$('themeBtn');
+    b.setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode');b.title=d?'Switch to light mode':'Switch to dark mode';
+    $('themeIcon').innerHTML=d?SUN:MOON;$('themeIcon').setAttribute('class',d?'sun':'moon');
+  }
+  $('themeBtn').onclick=function(){
+    var n=effTheme()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem('pdfr-theme',n)}catch(e){}
+    paintTheme();
+    try{if(!matchMedia('(prefers-reduced-motion:reduce)').matches)$('themeIcon').animate([{transform:'rotate(-80deg) scale(.4)',opacity:0},{transform:'none',opacity:1}],{duration:320,easing:'ease-out'})}catch(e){}
+  };
+  try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',paintTheme)}catch(e){}
+  paintTheme();
+
   var NS='http://www.w3.org/2000/svg',BASE=.95,LH=1.25;
   var stage=$('stage'),pagesEl=$('pages'),msg=$('msg'),textWrap=$('textWrap'),textBody=$('textBody'),textInfo=$('textInfo');
   var pdf=null,origBytes=null,fileName='',sizes=[],vps=[],pageNum=1,scale=1,mode='page',fitMode=true,textCache={},layoutGen=0,observer=null,ticking=false;
@@ -1013,23 +1034,6 @@ body.has-sel .ov{touch-action:none}
 
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(fitMode&&mode==='page'&&pdf)doFit()},150)});
 
-  /* ---------- Light / dark mode ---------- */
-  var root=document.documentElement,SUN='<circle cx="12" cy="12" r="4.6" fill="#ffd24d" stroke="none"/><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.1 5.1l1.9 1.9M17 17l1.9 1.9M5.1 18.9L7 17M17 7l1.9-1.9" stroke="#ffd24d" stroke-width="2.1" stroke-linecap="round" fill="none"/>',MOON='<path d="M20.6 14.3A8.7 8.7 0 019.7 3.4a8.7 8.7 0 1010.9 10.9z" fill="#1f2d52" stroke="none"/>';
-  function effTheme(){var t=root.getAttribute('data-theme');if(t==='dark'||t==='light')return t;return matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}
-  function paintTheme(){
-    var d=effTheme()==='dark',b=$('themeBtn');
-    b.setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode');b.title=d?'Switch to light mode':'Switch to dark mode';
-    $('themeIcon').innerHTML=d?SUN:MOON;$('themeIcon').setAttribute('class',d?'sun':'moon');
-  }
-  $('themeBtn').onclick=function(){
-    var n=effTheme()==='dark'?'light':'dark';
-    root.setAttribute('data-theme',n);
-    try{localStorage.setItem('pdfr-theme',n)}catch(e){}
-    paintTheme();
-    try{if(!calm.matches)$('themeIcon').animate([{transform:'rotate(-80deg) scale(.4)',opacity:0},{transform:'none',opacity:1}],{duration:320,easing:'ease-out'})}catch(e){}
-  };
-  try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',paintTheme)}catch(e){}
-  paintTheme();
 
   /* ---------- Print: pages are drawn to images with the annotations on top, then the browser's print dialog opens ---------- */
   var printing=false;
