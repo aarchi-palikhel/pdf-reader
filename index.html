@@ -32,12 +32,13 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .group{display:flex;align-items:center;gap:6px}
 .name{color:var(--muted);font-size:13px;min-width:0;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 button,.btn{font:inherit;color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;line-height:1.2;min-height:34px}
+.btn{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center}
 button:hover,.btn:hover{background:var(--bg)}
 button:disabled{opacity:.4;cursor:default}
 button:focus-visible,.btn:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .primary{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--accent),var(--lilac));color:var(--accent-fg);border-color:transparent;font-weight:700}
 .primary:hover{background:linear-gradient(120deg,var(--accent),var(--lilac));filter:brightness(1.08)}
-input[type=number]{font:inherit;width:56px;text-align:center;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 4px;min-height:34px;font-variant-numeric:tabular-nums}
+input[type=number]{box-sizing:border-box;font:inherit;width:56px;text-align:center;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 4px;min-height:34px;font-variant-numeric:tabular-nums}
 .of,.zoom{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
 .zoom{min-width:44px;text-align:center}
 .tabs{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
@@ -143,7 +144,7 @@ html,body,button,input,label,select,textarea,.btn{font-family:var(--font)}
 .swatch{width:22px;height:22px;min-height:0;padding:0;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
 .swatch:hover{transform:scale(1.15)}
 .swatch[aria-pressed="true"]{box-shadow:0 0 0 2px var(--accent)}
-select{font:inherit;font-size:13px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 10px;min-height:34px}
+select{box-sizing:border-box;font:inherit;font-size:13px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 10px;min-height:34px}
 select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .savebtn{margin-left:auto}
 .ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -159,6 +160,20 @@ body.tool-text .ov,body.tool-text .ov .a{cursor:text}
 .toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;max-width:calc(100% - 32px);
   background:var(--fg);color:var(--surface);padding:10px 18px;border-radius:999px;font-size:13px;text-align:center;box-shadow:var(--shadow)}
 @media (max-width:760px){.tool span{display:none}.tool{padding:6px 10px}}
+.end button{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.end svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media (max-width:560px){.end span{display:none}.end button{padding:6px 10px}}
+#printArea{display:none}
+@media print{
+  html,body{height:auto!important;background:#fff!important;padding:0!important;margin:0!important;display:block!important}
+  body::before{display:none!important}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important}
+  .pp{position:relative;margin:0;overflow:hidden;background:#fff;break-after:page;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pp:last-child{break-after:auto;page-break-after:auto}
+  .pp img{display:block;width:100%;height:100%}
+  .pp .ov{position:absolute;left:0;top:0;width:100%;height:100%}
+}
 /* Reading mode: once a PDF is open the playful decoration steps aside and the page stays plain. */
 body.reading main{background:var(--plain)}
 body.reading header::after,body.reading footer::before{animation:none;background:var(--line);height:1px}
@@ -169,15 +184,70 @@ body.reading .brand svg,body.reading footer svg{animation:none}
 body.reading footer .spark{display:none}
 body.reading .sheet{border-radius:2px;box-shadow:0 0 0 1px rgba(128,128,128,.28),0 4px 14px rgba(0,0,0,.14)}
 body.reading .text{border-radius:8px}
-@media (max-width:560px){.name{max-width:100%;order:9;flex-basis:100%}}
+.top{display:contents}
+.end{order:10;margin-left:auto}
+.name{order:9}
+.annbar{order:20;min-width:0;max-width:100%}
+#themeBtn,#themeBtn:hover,#themeBtn:active{width:40px;height:40px;padding:0;justify-content:center;border:0;background:none;box-shadow:none}
+#themeBtn:not(:disabled):hover{transform:scale(1.12)}
+#themeBtn svg{width:28px;height:28px;overflow:visible}
+@keyframes spin{to{transform:rotate(360deg)}}
+#themeIcon.sun{filter:drop-shadow(0 0 5px rgba(255,210,77,.75));animation:spin 24s linear infinite}
+#themeIcon.moon{filter:drop-shadow(0 1px 2px rgba(31,45,82,.25))}
+body.has-sel .ov{touch-action:none}
+/* Responsive: phones, landscape phones, tablets, large screens */
+@media (max-width:760px),(max-height:520px){
+  .annbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .annbar::-webkit-scrollbar{display:none}
+  .annbar>*{flex:none}
+  .tools{flex-wrap:nowrap}
+  .savebtn{margin-left:0}
+}
+@media (max-width:760px){
+  header{gap:8px 10px;padding-top:8px;padding-bottom:8px}
+  .top{display:flex;flex:1 1 100%;align-items:center;justify-content:space-between;gap:10px}
+  .end{order:0;margin-left:0}
+  .name{max-width:100%;flex-basis:100%;order:8}
+}
+@media (max-width:560px){.end span{display:none}.end button{padding:6px 10px}}
+@media (max-width:420px){
+  .brand{font-size:15px}
+  .welcome{margin-top:2vh;padding:24px 18px 18px}
+  .welcome h1{font-size:22px}
+  .text{padding:16px 14px;border-radius:14px}
+  .text-head{flex-wrap:wrap}
+  footer{font-size:12px}
+}
+@media (max-height:520px){
+  header{padding-top:6px;padding-bottom:6px;gap:6px 10px}
+  main{padding-top:12px;padding-bottom:16px}
+  .welcome{margin-top:1vh;padding:18px 20px 16px;gap:8px}
+  .welcome svg{width:30px;height:30px}
+  .welcome h1{font-size:20px}
+  body.reading footer{display:none}
+}
+@media (pointer:coarse){
+  button,.btn,select,input[type=number]{min-height:42px}
+  .swatch{width:30px;height:30px;min-height:0}
+  #themeBtn{width:44px;height:44px}
+  .tool,.savebtn{padding:8px 12px}
+}
+@media (min-width:1500px){body{font-size:15px}}
 </style>
 </head>
 <body>
+<script>try{var __t=localStorage.getItem('pdfr-theme');if(__t==='dark'||__t==='light')document.documentElement.setAttribute('data-theme',__t)}catch(e){}</script>
 
 <header>
-  <div class="brand">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.8 8.4 2.6 4.5 6.3 4.5c2 0 3.5 1.1 4.2 2.5.4.7 1.4.7 1.8 0 .7-1.4 2.2-2.5 4.2-2.5 3.7 0 5.5 3.9 3.9 7.3C19.5 16.4 12 21 12 21z"/></svg>
-    PDF Reader
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.8 8.4 2.6 4.5 6.3 4.5c2 0 3.5 1.1 4.2 2.5.4.7 1.4.7 1.8 0 .7-1.4 2.2-2.5 4.2-2.5 3.7 0 5.5 3.9 3.9 7.3C19.5 16.4 12 21 12 21z"/></svg>
+      PDF Reader
+    </div>
+    <div class="group end">
+      <button id="printBtn" title="Print the PDF with your annotations" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><span>Print</span></button>
+      <button id="themeBtn" aria-label="Switch to dark mode" title="Switch to dark mode"><svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true"></svg></button>
+    </div>
   </div>
   <div class="group">
     <label class="btn primary" for="file" tabindex="0" id="openBtn">Open PDF</label>
@@ -285,6 +355,8 @@ body.reading .text{border-radius:8px}
   <i class="spark" style="--s:11px;--d:1s;--t:3.2s"></i>
 </footer>
 
+<div id="printArea" aria-hidden="true"></div>
+<style id="printPage"></style>
 <div class="toast" id="toast" role="status" hidden></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -301,7 +373,7 @@ body.reading .text{border-radius:8px}
 
   function setMsg(t,err){msg.textContent=t;msg.className='msg'+(err?' err':'');msg.hidden=!t}
   function toast(t){var el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(function(){el.hidden=true},3000)}
-  function enable(on){['prev','next','pageInput','zout','zin','fit','zoomInput'].forEach(function(i){$(i).disabled=!on});updateNav()}
+  function enable(on){['prev','next','pageInput','zout','zin','fit','zoomInput','printBtn'].forEach(function(i){$(i).disabled=!on});updateNav()}
   function updateNav(){
     if(!pdf)return;
     var a=document.activeElement;
@@ -333,7 +405,7 @@ body.reading .text{border-radius:8px}
   function fitScale(){
     var cs=getComputedStyle(stage);
     var w=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
-    return Math.max(.25,Math.min(4,w/sizes[1].w));
+    return Math.max(.25,Math.min(1.75,w/sizes[1].w));
   }
 
   /* ---------- Annotations ---------- */
@@ -371,7 +443,7 @@ body.reading .text{border-radius:8px}
   }
 
   function buildSel(a,svg){
-    var g=S('g',{'class':'sel'}),r=7/scale,box;
+    var g=S('g',{'class':'sel'}),r=(matchMedia('(pointer:coarse)').matches?12:7)/scale,box;
     if(a.type==='text'){
       var te=svg.querySelector('g[data-id="'+a.id+'"] text');
       box=te?te.getBBox():{x:a.x1,y:a.y1,width:60,height:a.fs};
@@ -443,6 +515,7 @@ body.reading .text{border-radius:8px}
     $('undo').disabled=!undoSt.length;$('redo').disabled=!redoSt.length;$('del').disabled=!s;
     document.body.classList.toggle('drawing',tool!=='select'&&mode==='page'&&!!pdf);
     document.body.classList.toggle('tool-text',tool==='text');
+    document.body.classList.toggle('has-sel',!!s);
   }
   function setTool(t){
     tool=t;
@@ -673,7 +746,7 @@ body.reading .text{border-radius:8px}
     try{
       var page=await pdf.getPage(+el.dataset.page);
       if(gen!==layoutGen||!el._want){el._busy=false;return}
-      var vp=page.getViewport({scale:scale}),dpr=window.devicePixelRatio||1;
+      var vp=page.getViewport({scale:scale}),dpr=Math.min(window.devicePixelRatio||1,Math.sqrt(1.6e7/(vp.width*vp.height)));
       var c=document.createElement('canvas');
       c.width=Math.floor(vp.width*dpr);c.height=Math.floor(vp.height*dpr);
       var t=page.render({canvasContext:c.getContext('2d'),viewport:vp,transform:dpr!==1?[dpr,0,0,dpr,0,0]:null});
@@ -857,6 +930,8 @@ body.reading .text{border-radius:8px}
     anns=[];undoSt=[];redoSt=[];selId=null;editingId=null;
     try{var raw=localStorage.getItem(storeKey);if(raw){var arr=JSON.parse(raw);if(Array.isArray(arr))anns=arr}}catch(e){}
     document.body.classList.add('reading');
+    var small=matchMedia('(max-width:760px),(max-height:520px)').matches;
+    $('annbar').classList.toggle('collapsed',small);$('annToggle').setAttribute('aria-expanded',!small);
     textCache={};pageNum=1;fitMode=true;$('fileName').textContent=name;
     setMsg('');hideLoader();enable(true);setMode(mode);
     pagesEl.classList.remove('enter');void pagesEl.offsetWidth;pagesEl.classList.add('enter');
@@ -937,6 +1012,67 @@ body.reading .text{border-radius:8px}
   });
 
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(fitMode&&mode==='page'&&pdf)doFit()},150)});
+
+  /* ---------- Light / dark mode ---------- */
+  var root=document.documentElement,SUN='<circle cx="12" cy="12" r="4.6" fill="#ffd24d" stroke="none"/><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.1 5.1l1.9 1.9M17 17l1.9 1.9M5.1 18.9L7 17M17 7l1.9-1.9" stroke="#ffd24d" stroke-width="2.1" stroke-linecap="round" fill="none"/>',MOON='<path d="M20.6 14.3A8.7 8.7 0 019.7 3.4a8.7 8.7 0 1010.9 10.9z" fill="#1f2d52" stroke="none"/>';
+  function effTheme(){var t=root.getAttribute('data-theme');if(t==='dark'||t==='light')return t;return matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}
+  function paintTheme(){
+    var d=effTheme()==='dark',b=$('themeBtn');
+    b.setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode');b.title=d?'Switch to light mode':'Switch to dark mode';
+    $('themeIcon').innerHTML=d?SUN:MOON;$('themeIcon').setAttribute('class',d?'sun':'moon');
+  }
+  $('themeBtn').onclick=function(){
+    var n=effTheme()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem('pdfr-theme',n)}catch(e){}
+    paintTheme();
+    try{if(!calm.matches)$('themeIcon').animate([{transform:'rotate(-80deg) scale(.4)',opacity:0},{transform:'none',opacity:1}],{duration:320,easing:'ease-out'})}catch(e){}
+  };
+  try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',paintTheme)}catch(e){}
+  paintTheme();
+
+  /* ---------- Print: pages are drawn to images with the annotations on top, then the browser's print dialog opens ---------- */
+  var printing=false;
+  async function printPdf(){
+    if(!pdf||printing)return;
+    printing=true;$('printBtn').disabled=true;
+    var area=$('printArea');
+    try{
+      await sizesReady;
+      if(editingId){var ed=pagesEl.querySelector('textarea.ed');if(ed)ed.blur()}
+      renderAll();
+      area.textContent='';
+      $('printPage').textContent='@page{size:'+sizes[1].w+'pt '+sizes[1].h+'pt;margin:0}';
+      for(var n=1;n<=pdf.numPages;n++){
+        showLoader('Preparing page '+n+' of '+pdf.numPages+' for printing…',n/pdf.numPages*100);
+        var page=await pdf.getPage(n),sc=Math.min(150/72,3000/Math.max(sizes[n].w,sizes[n].h)),vp=page.getViewport({scale:sc});
+        var c=document.createElement('canvas');c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);
+        var ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+        await page.render({canvasContext:ctx,viewport:vp}).promise;
+        var div=document.createElement('div');
+        div.className='pp';div.style.width=sizes[n].w+'pt';div.style.height=sizes[n].h+'pt';
+        var img=new Image();img.alt='';img.src=c.toDataURL('image/jpeg',.92);
+        try{await img.decode()}catch(e){}
+        div.appendChild(img);
+        if(ovs[n]){
+          var ov=ovs[n].cloneNode(true);
+          Array.prototype.forEach.call(ov.querySelectorAll('.sel'),function(x){x.remove()});
+          div.appendChild(ov);
+        }
+        area.appendChild(div);
+        c.width=c.height=0;
+        await new Promise(function(r){setTimeout(r,0)});
+      }
+      hideLoader();
+      window.print();
+    }catch(e){
+      hideLoader();area.textContent='';
+      toast('This PDF could not be prepared for printing.');
+    }
+    printing=false;$('printBtn').disabled=!pdf;
+  }
+  $('printBtn').onclick=printPdf;
+  window.addEventListener('afterprint',function(){$('printArea').textContent=''});
 
   syncControls();
 })();
